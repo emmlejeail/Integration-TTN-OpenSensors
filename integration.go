@@ -53,7 +53,7 @@ func main(){
 	//connection to mqtt client of the things network
 	ctx := apex.Stdout().WithField("Integration", "TTN uplink")
 	log.Set(ctx)
-	clientmqtt:=TTNmqtt.NewClient(nil, "emmlej", confTTN.applicationID, confTTN.accessKey, "tcp://eu.thethings.network:1883")
+	clientmqtt:=TTNmqtt.NewClient(ctx, "emmlej", confTTN.applicationID, confTTN.accessKey, "tcp://eu.thethings.network:1883")
 	err:=clientmqtt.Connect()
 	if err!=nil{
 		fmt.Println("error: connecting to the mqtt client"+err.Error())
