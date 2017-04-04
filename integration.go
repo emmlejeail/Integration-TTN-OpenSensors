@@ -59,7 +59,7 @@ func main(){
 	handler := func(client TTNmqtt.Client, appID string, devID string, req types.UplinkMessage) {
 		fmt.Printf("\n*******MESSAGE INCOMING*******\n")
 		response, err := confOS.postMessage(req.PayloadFields); 
-		if err != nil || (response.StatusCode!=200 && response.StatusCode!=201 && response==nil) {
+		if err != nil || (response.StatusCode!=200 && response.StatusCode!=201 && response!=nil) {
 			fmt.Printf("Error while transmitting the message")
 		} else {
 			fmt.Printf("Your message was transmitted!")
