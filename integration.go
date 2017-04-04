@@ -3,13 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
+	"io/ioutil"
 	"net/http"
 	"bytes"
 	"encoding/json"
 	"github.com/TheThingsNetwork/ttn/core/types"
 	TTNmqtt "github.com/TheThingsNetwork/ttn/mqtt"
-	"github.com/TheThingsNetwork/go-utils/log"
-	"github.com/TheThingsNetwork/go-utils/log/apex"
 
 )
 
@@ -53,27 +52,25 @@ func main(){
 	err:=clientmqtt.Connect()
 	if err!=nil{
 		fmt.Sprintf("error: connecting to the mqtt client %s", err.Error())
-		os.Exit()
 	}
 	fmt.Sprintf("connected")
 
 	//Handler using the function to post the message to OpenSensors
 	handler := func(client TTNmqtt.Client, appID string, devID string, req types.UplinkMessage) {
-		fmt.Sprintf("\n*******MESSAGE INCOMING*******\n")
+		fmt.Printf("\n*******MESSAGE INCOMING*******\n")
 		response, err := confOS.postMessage(req.PayloadFields); 
 		if err != nil || (response.StatusCode!=200 && response.StatusCode!=201 && response==nil) {
-			fmt.Sprintf("Error while transmitting the message")
+			fmt.Printf("Error while transmitting the message")
 		} else {
-			fmt.Sprintf("Your message was transmitted!")
+			fmt.Printf("Your message was transmitted!")
 		}
 	}
 	//Subscribing to the device of TTN
 	token := clientmqtt.SubscribeDeviceUplink(confTTN.applicationID, confTTN.deviceID, handler)
-	fmt.Sprintf("...waiting for incoming messages...")
+	fmt.Printf("...waiting for incoming messages...")
 	token.Wait()
 	if err := token.Error(); err != nil {
 		fmt.Sprintf("No subscription made %s", err.Error())
-		os.Exit()
 	}
 	//keeps the program running till a message arrives
 	select {}
