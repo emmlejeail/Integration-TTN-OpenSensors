@@ -40,44 +40,40 @@ func main(){
 	confOS.devicePassword="zN9mr4Pn"
 	confOS.topicName="celcius"
 	confOS.userName="emmlej"
-	fmt.Printf(" config TTN ok ")
 	//config on TTN's side
 	confTTN.applicationID="office-app"
 	confTTN.accessKey="ttn-account-v2.OfuuW9smtu33PjpPtVAs54Bmc2dcgHEOywtuAT1oqzk"
 	confTTN.deviceID="office-hq"
-	fmt.Printf(" config OS ok ")
 
 	//apiURL complete link
 	confOS.apiURL="https://realtime.opensensors.io/v1/topics//users/"+confOS.userName+"/"+confOS.topicName+"?client-id="+confOS.deviceID+"&password="+confOS.devicePassword
 
 	//connection to mqtt client of the things network
-	ctx := apex.Stdout().WithField("Integration", "TTN uplink")
-	log.Set(ctx)
-	clientmqtt:=TTNmqtt.NewClient(ctx, "emmlej", confTTN.applicationID, confTTN.accessKey, "tcp://eu.thethings.network:1883")
+	clientmqtt:=TTNmqtt.NewClient(nil, "emmlej", confTTN.applicationID, confTTN.accessKey, "tcp://eu.thethings.network:1883")
 	err:=clientmqtt.Connect()
 	if err!=nil{
-		fmt.Println("error: connecting to the mqtt client"+err.Error())
-		os.Exit(0)
+		fmt.Sprintf("error: connecting to the mqtt client %s", err.Error())
+		os.Exit()
 	}
-	fmt.Println("connected")
+	fmt.Sprintf("connected")
 
 	//Handler using the function to post the message to OpenSensors
 	handler := func(client TTNmqtt.Client, appID string, devID string, req types.UplinkMessage) {
-		fmt.Print("\n*******MESSAGE INCOMING*******\n")
+		fmt.Sprintf("\n*******MESSAGE INCOMING*******\n")
 		response, err := confOS.postMessage(req.PayloadFields); 
 		if err != nil || (response.StatusCode!=200 && response.StatusCode!=201 && response==nil) {
-			fmt.Println("Error while transmitting the message")
+			fmt.Sprintf("Error while transmitting the message")
 		} else {
-			fmt.Println("Your message was transmitted!")
+			fmt.Sprintf("Your message was transmitted!")
 		}
 	}
 	//Subscribing to the device of TTN
 	token := clientmqtt.SubscribeDeviceUplink(confTTN.applicationID, confTTN.deviceID, handler)
-	fmt.Println("...waiting for incoming messages...")
+	fmt.Sprintf("...waiting for incoming messages...")
 	token.Wait()
 	if err := token.Error(); err != nil {
-		fmt.Println("No subscription made " + err.Error())
-		os.Exit(0)
+		fmt.Sprintf("No subscription made %s", err.Error())
+		os.Exit()
 	}
 	//keeps the program running till a message arrives
 	select {}
