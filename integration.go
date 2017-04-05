@@ -26,11 +26,15 @@ type Config struct {
 func main() {
 
 	var config Config
+	
+	//reading of the configuration file
 	file, err := ioutil.ReadFile("configuration.json")
 	if err != nil {
 		errRead := fmt.Sprintf("Error: %s", err.Error())
 		fmt.Printf(errRead)
 	}
+	
+	//conversion of the JSON file
 	err = json.Unmarshal(file, &config)
 	if err != nil {
 		errConv := fmt.Sprintf("Error: %s", err.Error())
@@ -56,9 +60,9 @@ func main() {
 				errPost := fmt.Sprintf("Error: %s", err.Error())
 				fmt.Printf(errPost)
 			} else {
-				buffer := new(bytes.Buffer)
-				buffer.ReadFrom(response.Body)
-				errResp := fmt.Sprintf("Error : %s", buffer.String())
+				codeErr := new(bytes.Buffer)
+				codeErr.ReadFrom(response.Body)
+				errResp := fmt.Sprintf("Error : %s", codeErr.String())
 				fmt.Printf(errResp)
 			}
 		} else {
