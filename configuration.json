@@ -1,0 +1,12 @@
+{
+    "OSapiURL": "https://realtime.opensensors.io/v1/",
+    "OSapiKey": "872946ba-f2e1-4e08-b5d0-80de02966023",
+    "OSdevicePassword": "zN9mr4Pn",
+    "OSdeviceID": "6033",
+    "OSuserName": "emmlej",
+    "OStopicName": "celcius",
+    "TTNapplicationID": "office-app",
+    "TTNdeviceID": "office-hq",
+    "TTNaccessKey": "ttn-account-v2.OfuuW9smtu33PjpPtVAs54Bmc2dcgHEOywtuAT1oqzk",
+    "TTNregion": "eu"
+}
